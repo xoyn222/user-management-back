@@ -9,10 +9,9 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'; // Use environment variable in production
-
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 app.use(cors({
-    origin: "https://user-management-6gnm.vercel.app",  // Укажи свой фронтенд URL
+    origin: "https://user-management-6gnm-q7gequgdv-xoyn222s-projects.vercel.app",  //
     methods: "GET,POST,PUT,DELETE",
     credentials: true
 }));
