@@ -85,6 +85,7 @@ app.post('/register', async (req, res) => {
         const isAdmin = userCount[0].count === 0;
 
         const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
         const [result] = await pool.query(
             'INSERT INTO users (name, email, password, status, registrationTime, lastLogin, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?)',
             [name, email, hashedPassword, 'active', now, now, isAdmin]
@@ -100,8 +101,8 @@ app.post('/register', async (req, res) => {
             token
         });
     } catch (error) {
-        console.error('Registration error:', error);
-        res.status(500).json({ message: 'Error registering user' });
+        console.error('Registration error:', error);  // Добавьте логи для ошибок
+        res.status(500).json({ message: 'Error registering user', error: error.message });
     }
 });
 
