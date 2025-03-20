@@ -215,6 +215,10 @@ app.get('/users/me', authenticateToken, (req, res) => {
     res.json(userWithoutPassword);
 });
 
+app.get("/", (req, res) => {
+    res.send("User Management Backend is running!");
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
