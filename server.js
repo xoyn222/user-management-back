@@ -20,14 +20,14 @@ app.use(express.json());
 
 // Database connection pool
 const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD ,
-    database: process.env.DB_NAME,
+    host: process.env.DB_HOST || "centerbeam.proxy.rlwy.net",
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "oEkGRfvlzEEkBmlOgBKxcjddgBFNMkQg",
+    database: process.env.DB_NAME || "railway",
+    port: process.env.DB_PORT || 36792,
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0,
-    port: process.env.DB_PORT,
+    queueLimit: 0
 });
 
 // Authentication middleware
@@ -85,7 +85,6 @@ app.post('/register', async (req, res) => {
         const isAdmin = userCount[0].count === 0;
 
         const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
-
         const [result] = await pool.query(
             'INSERT INTO users (name, email, password, status, registrationTime, lastLogin, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?)',
             [name, email, hashedPassword, 'active', now, now, isAdmin]
@@ -101,8 +100,8 @@ app.post('/register', async (req, res) => {
             token
         });
     } catch (error) {
-        console.error('Registration error:', error);  // Добавьте логи для ошибок
-        res.status(500).json({ message: 'Error registering user', error: error.message });
+        console.error('Registration error:', error);
+        res.status(500).json({ message: 'Error registering user' });
     }
 });
 
