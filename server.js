@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 app.use(cors({
-    origin: "https://user-management-6gnm-q7gequgdv-xoyn222s-projects.vercel.app",  //
+    origin: "https://user-management-front-production.up.railway.app",  //
     methods: "GET,POST,PUT,DELETE",
     credentials: true
 }));
