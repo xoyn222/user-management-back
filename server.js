@@ -11,7 +11,6 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-// Enhanced CORS configuration with more permissive settings for troubleshooting
 app.use(cors({
     origin: "*",  // Allow all origins for troubleshooting
     methods: "GET,POST,PUT,DELETE",
@@ -20,7 +19,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Database connection pool with correct environment variables
 const pool = mysql.createPool({
     host: process.env.MYSQLHOST || "mysql-uazh.railway.internal",
     user: process.env.MYSQLUSER || "root",
