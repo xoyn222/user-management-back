@@ -11,24 +11,33 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 app.use(cors({
-    origin: "https://user-management-front-production.up.railway.app",  //
+    origin: "https://user-management-front-production.up.railway.app",
     methods: "GET,POST,PUT,DELETE",
     credentials: true
 }));
 app.use(express.json());
 
-// Database connection pool
+// Database connection pool with correct environment variables
 const pool = mysql.createPool({
-    host: process.env.MYSQLHOST || "centerbeam.proxy.rlwy.net",
+    host: process.env.MYSQLHOST || "mysql-uazh.railway.internal",
     user: process.env.MYSQLUSER || "root",
     password: process.env.MYSQLPASSWORD || "oEkGRfvlzEEkBmlOgBKxcjddgBFNMkQg",
-    database: process. env.MYSQLDATABASE || "railway",
-    port: process.env.MYSQLPORT || 36792,
+    database: process.env.MYSQLDATABASE || "railway",
+    port: process.env.MYSQLPORT || 3306,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
 });
 
+// Test database connection
+pool.getConnection()
+    .then(connection => {
+        console.log('Database connected successfully');
+        connection.release();
+    })
+    .catch(err => {
+        console.error('Error connecting to the database:', err);
+    });
 
 // Authentication middleware
 const authenticateToken = async (req, res, next) => {
@@ -203,6 +212,26 @@ app.put('/users/unblock', authenticateToken, isAdmin, async (req, res) => {
     }
 });
 
+app.delete('/users/delete', authenticateToken, isAdmin, async (req, res) => {
+    const { userIds } = req.body;
+
+    if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
+        return res.status(400).json({ message: 'User IDs are required' });
+    }
+
+    try {
+        if (userIds.includes(req.user.id.toString())) {
+            return res.status(400).json({ message: 'You cannot delete yourself' });
+        }
+
+        await pool.query('DELETE FROM users WHERE id IN (?)', [userIds]);
+        res.json({ message: 'Users deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting users:', error);
+        res.status(500).json({ message: 'Error deleting users' });
+    }
+});
+
 app.get('/users/me', authenticateToken, (req, res) => {
     const userWithoutPassword = {
         id: req.user.id,
@@ -219,6 +248,19 @@ app.get("/", (req, res) => {
     res.send("User Management Backend is running!");
 });
 
-app.listen(PORT, () => {
+// Start server with proper error handling
+const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+});
+
+// Handle graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down gracefully');
+    server.close(() => {
+        console.log('Server closed');
+        pool.end().then(() => {
+            console.log('Database pool closed');
+            process.exit(0);
+        });
+    });
 });
