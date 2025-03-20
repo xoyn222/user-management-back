@@ -19,11 +19,11 @@ app.use(express.json());
 
 // Database connection pool
 const pool = mysql.createPool({
-    host: process.env.DB_HOST || "centerbeam.proxy.rlwy.net",
-    user: process.env.DB_USER || "root",
-    password: process.env.DB_PASSWORD || "oEkGRfvlzEEkBmlOgBKxcjddgBFNMkQg",
-    database: process.env.DB_NAME || "railway",
-    port: process.env.DB_PORT || 36792,
+    host: process.env.MYSQLHOST || "centerbeam.proxy.rlwy.net",
+    user: process.env.MYSQLUSER || "root",
+    password: process.env.MYSQLPASSWORD || "oEkGRfvlzEEkBmlOgBKxcjddgBFNMkQg",
+    database: process. env.MYSQLDATABASE || "railway",
+    port: process.env.MYSQLPORT || 36792,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
