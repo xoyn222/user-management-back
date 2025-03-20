@@ -29,21 +29,7 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-const connection = mysql.createConnection({
-    host: 'centerbeam.proxy.rlwy.net',
-    port: 36792,
-    user: 'root',
-    password: 'oEkGRfvlzEEkBmlOgBKxcjddgBFNMkQg',
-    database: 'railway'
-});
 
-connection.connect((err) => {
-    if (err) {
-        console.error('Ошибка подключения:', err);
-        return;
-    }
-    console.log('Подключение к базе данных успешно!');
-});
 // Authentication middleware
 const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
