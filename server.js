@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 app.use(cors({
-    origin: "*",  // Allow all origins for troubleshooting
+    origin: "*",
     methods: "GET,POST,PUT,DELETE",
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization']
