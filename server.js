@@ -20,9 +20,9 @@ app.use(cors({
 app.use(express.json());
 
 const pool = mysql.createPool({
-    host: process.env.MYSQLHOST || "mysql-uazh.railway.internal",
+    host: process.env.MYSQLHOST || "mysql-fzhf.railway.internal",
     user: process.env.MYSQLUSER || "root",
-    password: process.env.MYSQLPASSWORD || "oEkGRfvlzEEkBmlOgBKxcjddgBFNMkQg",
+    password: process.env.MYSQLPASSWORD || "aNtfzjmjtlkjdjajmnhzawBrEDdokjJt",
     database: process.env.MYSQLDATABASE || "railway",
     port: process.env.MYSQLPORT || 3306,
     waitForConnections: true,
