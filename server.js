@@ -134,6 +134,7 @@ app.post('/register', async (req, res) => {
 
 app.post('/login', async (req, res) => {
     console.log('Login request received, body:', req.body);
+    console.log("Generated Token:", token);
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -145,6 +146,7 @@ app.post('/login', async (req, res) => {
         console.log('Querying user with email:', email);
         const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
         console.log('User query results:', users.length > 0 ? 'User found' : 'User not found');
+        
 
         if (users.length === 0) {
             return res.status(401).json({ message: 'Invalid email or password' });
@@ -158,7 +160,6 @@ app.post('/login', async (req, res) => {
             return res.status(403).json({ message: 'Your account has been blocked. Please contact an administrator.' });
         }
 
-        // Print just the first few chars of the password to avoid logging sensitive info
         console.log('Stored password hash (first 10 chars):', user.password.substring(0, 10) + '...');
 
         console.log('Comparing passwords...');
