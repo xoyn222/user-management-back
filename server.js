@@ -119,7 +119,7 @@ app.post('/register', async (req, res) => {
         console.log('New user retrieved:', newUser.length > 0);
 
         const token = jwt.sign({ userId: newUser[0].id }, JWT_SECRET, { expiresIn: '24h' });
-        console.log('JWT token generated');
+        console.log('Generated Token:', token);
 
         res.status(201).json({
             message: 'User registered successfully',
@@ -174,7 +174,7 @@ app.post('/login', async (req, res) => {
         console.log('Last login updated for user ID:', user.id);
 
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '24h' });
-        console.log("Generated Token:", token);
+        console.log('Generated Token:', token);
 
         const userWithoutPassword = {
             id: user.id,
