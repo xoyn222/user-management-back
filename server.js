@@ -134,7 +134,6 @@ app.post('/register', async (req, res) => {
 
 app.post('/login', async (req, res) => {
     console.log('Login request received, body:', req.body);
-    console.log("Generated Token:", token);
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -175,7 +174,7 @@ app.post('/login', async (req, res) => {
         console.log('Last login updated for user ID:', user.id);
 
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '24h' });
-        console.log('JWT token generated');
+        console.log("Generated Token:", token);
 
         const userWithoutPassword = {
             id: user.id,
