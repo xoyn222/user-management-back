@@ -118,12 +118,8 @@ app.post('/register', async (req, res) => {
         const [newUser] = await pool.query('SELECT id, name, email, status, isAdmin FROM users WHERE id = ?', [result.insertId]);
         console.log('New user retrieved:', newUser.length > 0);
 
-        try {
-            const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '24h' });
-            console.log("Generated Token:", token);
-        } catch (error) {
-            console.error("Error generating JWT:", error);
-        }
+        const token = jwt.sign({ userId: newUser[0].id }, JWT_SECRET, { expiresIn: '24h' });
+        console.log('Generated Token:', token);
 
         res.status(201).json({
             message: 'User registered successfully',
@@ -177,12 +173,8 @@ app.post('/login', async (req, res) => {
         await pool.query('UPDATE users SET lastLogin = ? WHERE id = ?', [now, user.id]);
         console.log('Last login updated for user ID:', user.id);
 
-        try {
-            const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '24h' });
-            console.log("Generated Token:", token);
-        } catch (error) {
-            console.error("Error generating JWT:", error);
-        }
+        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '24h' });
+        console.log('Generated Token:', token);
 
         const userWithoutPassword = {
             id: user.id,
