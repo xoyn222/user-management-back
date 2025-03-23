@@ -232,22 +232,28 @@ app.put('/users/block', authenticateToken, isAdmin, async (req, res) => {
     }
 });
 
-app.put('/users/unblock', authenticateToken, isAdmin, async (req, res) => {
+app.put('/users/block', authenticateToken, isAdmin, async (req, res) => {
     const { userIds } = req.body;
-    console.log('Unblock users request, IDs:', userIds);
+    console.log('Block users request, IDs:', userIds);
 
     if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
-        console.log('Invalid user IDs for unblocking');
+        console.log('Invalid user IDs for blocking');
         return res.status(400).json({ message: 'User IDs are required' });
     }
 
     try {
-        await pool.query('UPDATE users SET status = ? WHERE id IN (?)', ['active', userIds]);
-        console.log('Users unblocked successfully, count:', userIds.length);
-        res.json({ message: 'Users unblocked successfully' });
+        await pool.query('UPDATE users SET status = ? WHERE id IN (?)', ['blocked', userIds]);
+        console.log('Users blocked successfully, count:', userIds.length);
+        
+        const selfBlocked = userIds.includes(req.user.id.toString());
+        
+        res.json({ 
+            message: 'Users blocked successfully',
+            selfBlocked: selfBlocked
+        });
     } catch (error) {
-        console.error('Error unblocking users:', error);
-        res.status(500).json({ message: 'Error unblocking users', error: error.message });
+        console.error('Error blocking users:', error);
+        res.status(500).json({ message: 'Error blocking users', error: error.message });
     }
 });
 
@@ -261,14 +267,15 @@ app.delete('/users/delete', authenticateToken, isAdmin, async (req, res) => {
     }
 
     try {
-        if (userIds.includes(req.user.id.toString())) {
-            console.log('Attempt to delete self rejected');
-            return res.status(400).json({ message: 'You cannot delete yourself' });
-        }
-
         await pool.query('DELETE FROM users WHERE id IN (?)', [userIds]);
         console.log('Users deleted successfully, count:', userIds.length);
-        res.json({ message: 'Users deleted successfully' });
+        
+        const selfDeleted = userIds.includes(req.user.id.toString());
+        
+        res.json({ 
+            message: 'Users deleted successfully',
+            selfDeleted: selfDeleted
+        });
     } catch (error) {
         console.error('Error deleting users:', error);
         res.status(500).json({ message: 'Error deleting users', error: error.message });
