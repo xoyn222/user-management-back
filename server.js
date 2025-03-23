@@ -218,30 +218,6 @@ app.put('/users/block', authenticateToken, isAdmin, async (req, res) => {
     }
 
     try {
-        if (userIds.includes(req.user.id.toString())) {
-            console.log('Attempt to block self rejected');
-            return res.status(400).json({ message: 'You cannot block yourself' });
-        }
-
-        await pool.query('UPDATE users SET status = ? WHERE id IN (?)', ['blocked', userIds]);
-        console.log('Users blocked successfully, count:', userIds.length);
-        res.json({ message: 'Users blocked successfully' });
-    } catch (error) {
-        console.error('Error blocking users:', error);
-        res.status(500).json({ message: 'Error blocking users', error: error.message });
-    }
-});
-
-app.put('/users/block', authenticateToken, isAdmin, async (req, res) => {
-    const { userIds } = req.body;
-    console.log('Block users request, IDs:', userIds);
-
-    if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
-        console.log('Invalid user IDs for blocking');
-        return res.status(400).json({ message: 'User IDs are required' });
-    }
-
-    try {
         await pool.query('UPDATE users SET status = ? WHERE id IN (?)', ['blocked', userIds]);
         console.log('Users blocked successfully, count:', userIds.length);
         
