@@ -233,6 +233,28 @@ app.put('/users/block', authenticateToken, isAdmin, async (req, res) => {
     }
 });
 
+app.put('/users/unblock', authenticateToken, isAdmin, async (req, res) => {
+    const { userIds } = req.body;
+    console.log('Unblock users request, IDs:', userIds);
+
+    if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
+        console.log('Invalid user IDs for unblocking');
+        return res.status(400).json({ message: 'User IDs are required' });
+    }
+
+    try {
+        await pool.query('UPDATE users SET status = ? WHERE id IN (?)', ['active', userIds]);
+        console.log('Users unblocked successfully, count:', userIds.length);
+        
+        res.json({ 
+            message: 'Users unblocked successfully'
+        });
+    } catch (error) {
+        console.error('Error unblocking users:', error);
+        res.status(500).json({ message: 'Error unblocking users', error: error.message });
+    }
+});
+
 app.delete('/users/delete', authenticateToken, isAdmin, async (req, res) => {
     const { userIds } = req.body;
     console.log('Delete users request, IDs:', userIds);
